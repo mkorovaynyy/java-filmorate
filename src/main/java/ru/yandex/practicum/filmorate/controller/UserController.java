@@ -70,6 +70,9 @@ public class UserController {
             log.trace("вместо имени пользователя будет использоваться логин");
             user.setName(user.getLogin());
         }
+        if(user.getName().equals("null")) {
+            throw new CustomValidateException("мя может быть пустым, но должно быть проинициализировано");
+        }
     }
 
     public Integer generateId() {
