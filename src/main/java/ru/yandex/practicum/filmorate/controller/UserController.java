@@ -36,6 +36,7 @@ public class UserController {
     //обновление пользователя
     @PutMapping("/users")
     public User updateUser(@Valid @RequestBody User user) {
+        validateUser(user);
         if(!mapOfUser.containsKey(user.getId())) {
             log.trace("Обновление невозможно - пользователь с указанным id " + user.getId() + " отсутствует в системе");
             throw new CustomValidateException("Обновление невозможно - пользователь с указанным id " + user.getId() + " отсутствует в системе");
@@ -66,7 +67,11 @@ public class UserController {
             log.trace("дата рождения не может быть в будущем");
             throw new CustomValidateException("дата рождения не может быть в будущем");
         }
-        if(user.getName().isEmpty()) {
+        if(user.getName().isBlank()) {
+            log.trace("вместо имени пользователя будет использоваться логин");
+            user.setName(user.getLogin());
+        }
+        if(user.getName() == "null") {
             log.trace("вместо имени пользователя будет использоваться логин");
             user.setName(user.getLogin());
         }

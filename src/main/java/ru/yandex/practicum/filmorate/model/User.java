@@ -10,7 +10,6 @@ public class User {
     @Email
     private final String email;
     private final String login;
-    @NotNull
-    private String name;
+    private String name = "";
     private final String birthday;
 }
