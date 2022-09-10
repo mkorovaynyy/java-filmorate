@@ -20,8 +20,8 @@ public class FilmController {
 
     //добавление фильма
     @PostMapping("/films")
-    public Film createFilm(@Valid @RequestBody Film film) {
-        validateFilm(film);
+    public Film create(@Valid @RequestBody Film film) {
+        validate(film);
         film.setId(idController);
         if(filmHashMap.containsValue(film)) {
             log.trace("Данный Фильм уже содержится в рейтинге");
@@ -34,8 +34,8 @@ public class FilmController {
 
     //обновление фильма
     @PutMapping("/films")
-    public Film updateFilm(@Valid @RequestBody Film film) {
-        validateFilm(film);
+    public Film update(@Valid @RequestBody Film film) {
+        validate(film);
         if(filmHashMap.containsKey(film.getId())) {
             filmHashMap.put(film.getId(), film);
         } else {
@@ -46,7 +46,7 @@ public class FilmController {
     }
     //получение всех фильмов
     @GetMapping("/films")
-    public Collection<Film> getAllFilms() {
+    public Collection<Film> getAll() {
         return filmHashMap.values();
     }
 
@@ -55,7 +55,7 @@ public class FilmController {
         return idController;
     }
 
-    public void validateFilm(Film film) {
+    public void validate(Film film) {
         if (film.getDescription().length() > 200) {
             log.trace("максимальная длина описания — 200 символов");
             throw new CustomValidateException("максимальная длина описания — 200 символов");

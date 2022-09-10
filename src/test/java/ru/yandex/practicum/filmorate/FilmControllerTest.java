@@ -16,7 +16,7 @@ public class FilmControllerTest {
         Film film1 = new Film("film1", "ds f1", "1500-6-5", 120L);
         final CustomValidateException exp1 = assertThrows(
                 CustomValidateException.class,
-                () -> controller.validateFilm(film1)
+                () -> controller.validate(film1)
         );
         Assertions.assertEquals("дата релиза — не раньше 28 декабря 1985", exp1.getMessage());
         Film film2 = new Film("film2", "Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль." +
@@ -24,7 +24,7 @@ public class FilmControllerTest {
                 " о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.", "2000-6-5", 120L);
         final CustomValidateException exp2 = assertThrows(
                 CustomValidateException.class,
-                () -> controller.validateFilm(film2)
+                () -> controller.validate(film2)
         );
         Assertions.assertEquals("максимальная длина описания — 200 символов", exp2.getMessage());
 

@@ -16,21 +16,21 @@ public class UserControllerTest {
         User user1 = new User("sobaka1@mail.com", "log in", "2000-12-25");
         final CustomValidateException exp1 = assertThrows(
                 CustomValidateException.class,
-                () -> controller.validateUser(user1)
+                () -> controller.validate(user1)
         );
         Assertions.assertEquals("логин не может быть пустым и содержать пробелы", exp1.getMessage());
 
         User user2 = new User("sobaka2@mail.com", " ", "2000-11-25");
         final CustomValidateException exp2 = assertThrows(
                 CustomValidateException.class,
-                () -> controller.validateUser(user2)
+                () -> controller.validate(user2)
         );
         Assertions.assertEquals("логин не может быть пустым и содержать пробелы", exp2.getMessage());
 
         User user3 = new User("sobaka3@mail.com", "login3", "3000-12-25");
         final CustomValidateException exp3 = assertThrows(
                 CustomValidateException.class,
-                () -> controller.validateUser(user3)
+                () -> controller.validate(user3)
         );
         Assertions.assertEquals("дата рождения не может быть в будущем", exp3.getMessage());
     }

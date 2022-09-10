@@ -21,8 +21,8 @@ public class UserController {
 
     //создание пользователя
     @PostMapping("/users")
-    public User createUser(@Valid @RequestBody User user) {
-        validateUser(user);
+    public User create(@Valid @RequestBody User user) {
+        validate(user);
         user.setId(idController);
         if(mapOfUser.containsValue(user)) {
             log.trace("Данный пользователь уже добавлен в систему");
@@ -35,8 +35,8 @@ public class UserController {
 
     //обновление пользователя
     @PutMapping("/users")
-    public User updateUser(@Valid @RequestBody User user) {
-        validateUser(user);
+    public User update(@Valid @RequestBody User user) {
+        validate(user);
         if(!mapOfUser.containsKey(user.getId())) {
             log.trace("Обновление невозможно - пользователь с указанным id " + user.getId() + " отсутствует в системе");
             throw new CustomValidateException("Обновление невозможно - пользователь с указанным id " + user.getId() + " отсутствует в системе");
@@ -51,7 +51,7 @@ public class UserController {
     }
 
 
-    public void validateUser(User user) {
+    public void validate(User user) {
         if(user.getLogin().isBlank()) {
             log.trace("логин не может быть пустым и содержать пробелы");
             throw new CustomValidateException("логин не может быть пустым и содержать пробелы");
@@ -79,7 +79,7 @@ public class UserController {
     }
 
     public Integer generateId() {
-        idController =  mapOfUser.size() + 1;
+        idController++;
         return idController;
     }
 }
