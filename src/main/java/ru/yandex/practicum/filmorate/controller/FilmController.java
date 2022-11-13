@@ -2,70 +2,66 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.customException.CustomValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.servise.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 @Slf4j
 @RestController
 public class FilmController {
     @Getter
-    private HashMap<Integer, Film>  filmHashMap = new HashMap<>();
-    @Getter
-    private static Integer idController = 1;
+    private final InMemoryFilmStorage inMemoryFilmStorage;
+    private final InMemoryUserStorage inMemoryUserStorage;
+    private final FilmService filmService;
+
+    @Autowired
+    public FilmController(InMemoryFilmStorage inMemoryFilmStorage, InMemoryUserStorage inMemoryUserStorage, FilmService filmService) {
+        this.inMemoryUserStorage = inMemoryUserStorage;
+        this.inMemoryFilmStorage = inMemoryFilmStorage;
+        this.filmService = filmService;
+    }
 
     //добавление фильма
     @PostMapping("/films")
     public Film create(@Valid @RequestBody Film film) {
-        validate(film);
-        film.setId(idController);
-        if(filmHashMap.containsValue(film)) {
-            log.trace("Данный Фильм уже содержится в рейтинге");
-            throw new CustomValidateException("Данный Фильм уже содержится в рейтинге");
-        }
-        filmHashMap.put(film.getId(), film);
-        generateId();
-        return film;
+        return inMemoryFilmStorage.create(film);
     }
 
     //обновление фильма
     @PutMapping("/films")
     public Film update(@Valid @RequestBody Film film) {
-        validate(film);
-        if(filmHashMap.containsKey(film.getId())) {
-            filmHashMap.put(film.getId(), film);
-        } else {
-            log.trace("Обновление невозможно - фильм с указанным id " + film.getId() + " отсутствует в рейтинге");
-            throw new CustomValidateException("Обновление невозможно - фильм с указанным id " + film.getId() + " отсутствует в рейтинге");
-        }
-        return film;
+        return inMemoryFilmStorage.update(film);
     }
     //получение всех фильмов
     @GetMapping("/films")
     public Collection<Film> getAll() {
-        return filmHashMap.values();
+        return inMemoryFilmStorage.getAll();
     }
 
-    public Integer generateId() {
-        idController =  filmHashMap.size() + 1;
-        return idController;
+    //пользователь ставит лайк фильму
+    @PutMapping("/films/{id}/like/{userId}")
+    public void addLike(@PathVariable String id, @PathVariable String userId) {
+    filmService.addLike(inMemoryFilmStorage, inMemoryUserStorage, Integer.parseInt(id), Integer.parseInt(userId));
     }
 
-    public void validate(Film film) {
-        if (film.getDescription().length() > 200) {
-            log.trace("максимальная длина описания — 200 символов");
-            throw new CustomValidateException("максимальная длина описания — 200 символов");
-        }
-        String dateToString = film.getReleaseDate();
-        String [] split = dateToString.split("-");
-        Date date = new Date(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
-        if(date.before(new Date(1895, 12, 25))) {
-            log.trace("дата релиза — не раньше 28 декабря 1985");
-            throw new CustomValidateException("дата релиза — не раньше 28 декабря 1985");
-        }
+    //пользователь удаляет лайк.
+    @DeleteMapping("/films/{id}/like/{userId}")
+    public void removeLike(@PathVariable String id, @PathVariable String userId) {
+        filmService.removeLike(inMemoryFilmStorage, Integer.parseInt(id), Integer.parseInt(userId));
+    }
+
+    //возвращает список из первых count фильмов по количеству лайков.
+    //Если значение параметра count не задано, верните первые 10
+    @GetMapping("/films/popular?count={count}")
+    public ArrayList<Film> topFilms(@PathVariable String count) {
+        if(count.equals("null")) {
+            return filmService.topFilms(inMemoryFilmStorage, 10);
+        } else return filmService.topFilms(inMemoryFilmStorage, Integer.parseInt(count));
     }
 }

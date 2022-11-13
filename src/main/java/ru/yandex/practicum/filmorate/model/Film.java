@@ -1,13 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Data
-public class Film {
+public class Film implements Comparable<Film>{
     private Integer id;
     @NotBlank
     private final String name;
@@ -17,5 +21,10 @@ public class Film {
     private final Long duration;
     @Positive
     private Integer rate;
+    private HashMap<Integer, User> likes = new HashMap<>();
 
+    @Override
+    public int compareTo(Film o) {
+        return this.getLikes().size() - o.getLikes().size();
+    }
 }
