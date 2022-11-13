@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.customException.FilmIdException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.servise.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
@@ -42,6 +43,13 @@ public class FilmController {
     @GetMapping("/films")
     public Collection<Film> getAll() {
         return inMemoryFilmStorage.getAll();
+    }
+
+    @GetMapping("/films/{id}")
+    public Film getFilmById(@PathVariable String id) {
+        if(inMemoryFilmStorage.getFilmHashMap().containsKey(Integer.parseInt(id))) {
+            return inMemoryFilmStorage.getFilmHashMap().get(Integer.parseInt(id));
+        } else throw new FilmIdException("фильм с указанным id отсутствует");
     }
 
     //пользователь ставит лайк фильму

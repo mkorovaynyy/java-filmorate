@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.filmorate.customException.CustomValidateException;
+import ru.yandex.practicum.filmorate.customException.FilmIdException;
 import ru.yandex.practicum.filmorate.customException.UserIdException;
 
 import java.util.Map;
@@ -33,6 +33,12 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleHappinessOverflow(final UserIdException e) {
+        return Map.of("исключение:", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleHappinessOverflow(final FilmIdException e) {
         return Map.of("исключение:", e.getMessage());
     }
 }
