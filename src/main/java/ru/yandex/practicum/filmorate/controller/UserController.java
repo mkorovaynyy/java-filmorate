@@ -70,7 +70,7 @@ public class UserController {
 
     //список друзей, общих с другим пользователем
     @GetMapping("/users/{id}/friends/common/{otherId}")
-    public  Collection<User> listOfCommonFriends(@PathVariable String id) {
-        return userService.retListOfCommonFriends(inMemoryUserStorage, Integer.parseInt(id));
+    public  Collection<User> listOfCommonFriends(@PathVariable String id, @PathVariable String otherId) {
+        return userService.retListOfCommonFriends(inMemoryUserStorage, Integer.parseInt(id), Integer.parseInt(otherId));
     }
 }

@@ -24,7 +24,7 @@ public class UserService {
         inMemoryUserStorage.getMapOfUser().get(idUser1).getFriends().remove(idUser2, inMemoryUserStorage.getMapOfUser().get(idUser2));
         inMemoryUserStorage.getMapOfUser().get(idUser2).getFriends().remove(idUser1, inMemoryUserStorage.getMapOfUser().get(idUser1));
     }
-    //вывод списка общих друзей
+    //вывод списка  друзей
     public ArrayList<User> retListOfFriends(InMemoryUserStorage inMemoryUserStorage, Integer idUser) {
         ArrayList<User> listOfFriends = new ArrayList<>();
         for(User user: inMemoryUserStorage.getMapOfUser().get(idUser).getFriends().values()) {
@@ -32,14 +32,12 @@ public class UserService {
         }
         return listOfFriends;
     }
-
-    public ArrayList<User> retListOfCommonFriends(InMemoryUserStorage inMemoryUserStorage, Integer idUser) {
+    //вывод списка общих друзей
+    public ArrayList<User> retListOfCommonFriends(InMemoryUserStorage inMemoryUserStorage, Integer idUser1, Integer idUser2) {
         ArrayList<User> listOfFriends = new ArrayList<>();
-        for(User user: inMemoryUserStorage.getMapOfUser().get(idUser).getFriends().values()) {
-            for(User user1: inMemoryUserStorage.getMapOfUser().values()) {
-                if (user1.getFriends().containsKey(user.getId())) {
-                    listOfFriends.add(user1);
-                }
+        for(User user: inMemoryUserStorage.getMapOfUser().get(idUser1).getFriends().values()) {
+            if (inMemoryUserStorage.getMapOfUser().get(idUser2).getFriends().containsKey(user.getId())) {
+                listOfFriends.add(user);
             }
         }
         return listOfFriends;
