@@ -64,13 +64,13 @@ public class UserController {
 
     //возвращаем список пользователей, являющихся его друзьями
     @GetMapping("/users/{id}/friends")
-    public ArrayList<User> listOfFriends(@PathVariable String id) {
+    public Collection<User> listOfFriends(@PathVariable String id) {
         return userService.retListOfFriends(inMemoryUserStorage, Integer.parseInt(id));
     }
 
     //список друзей, общих с другим пользователем
     @GetMapping("/users/{id}/friends/common/{otherId}")
-    public  ArrayList<User> listOfCommonFriends(@PathVariable String id) {
+    public  Collection<User> listOfCommonFriends(@PathVariable String id) {
         return userService.retListOfCommonFriends(inMemoryUserStorage, Integer.parseInt(id));
     }
 }

@@ -67,7 +67,7 @@ public class FilmController {
     //возвращает список из первых count фильмов по количеству лайков.
     //Если значение параметра count не задано, верните первые 10
     @GetMapping("/films/popular?count={count}")
-    public ArrayList<Film> topFilms(@PathVariable String count) {
+    public Collection<Film> topFilms(@PathVariable String count) {
         if(count.equals("null")) {
             return filmService.topFilms(inMemoryFilmStorage, 10);
         } else return filmService.topFilms(inMemoryFilmStorage, Integer.parseInt(count));
