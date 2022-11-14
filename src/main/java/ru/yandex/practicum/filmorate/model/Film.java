@@ -21,7 +21,7 @@ public class Film implements Comparable<Film>{
     private final Long duration;
     @Positive
     private Integer rate;
-    private HashMap<Integer, User> likes = new HashMap<>();
+    private Set<Integer> likes = new HashSet<>();
 
     @Override
     public int compareTo(Film o) {
