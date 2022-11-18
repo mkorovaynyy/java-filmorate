@@ -16,9 +16,8 @@ public class FilmControllerTest {
     @Test
     public void shouldThrowException() {
         InMemoryFilmStorage filmStorage = new InMemoryFilmStorage();
-        InMemoryUserStorage userStorage = new InMemoryUserStorage();
         FilmService service = new FilmService();
-        FilmController controller = new FilmController(filmStorage, userStorage, service);
+        FilmController controller = new FilmController(filmStorage, service);
         Film film1 = new Film("film1", "ds f1", "1500-6-5", 120L);
         final CustomValidateException exp1 = assertThrows(
                 CustomValidateException.class,

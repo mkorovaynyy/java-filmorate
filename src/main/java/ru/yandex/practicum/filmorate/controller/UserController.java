@@ -10,8 +10,11 @@ import ru.yandex.practicum.filmorate.servise.UserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
+
 @Slf4j
 @RestController
 public class UserController {
@@ -64,13 +67,23 @@ public class UserController {
 
     //возвращаем список пользователей, являющихся его друзьями
     @GetMapping("/users/{id}/friends")
-    public Collection<Integer> listOfFriends(@PathVariable String id) {
-        return userService.retListOfFriends(inMemoryUserStorage, Integer.parseInt(id));
+    public Collection<User> listOfFriends(@PathVariable String id) {
+        Collection<Integer> setId = userService.retListOfFriends(inMemoryUserStorage, Integer.parseInt(id));
+        HashMap<Integer, User> friends = new HashMap<>();
+        for(Integer myFriendsId: setId) {
+            friends.put(myFriendsId, inMemoryUserStorage.getMapOfUser().get(myFriendsId));
+        }
+        return friends.values();
     }
 
     //список друзей, общих с другим пользователем
     @GetMapping("/users/{id}/friends/common/{otherId}")
-    public  Collection<Integer> listOfCommonFriends(@PathVariable String id, @PathVariable String otherId) {
-        return userService.retListOfCommonFriends(inMemoryUserStorage, Integer.parseInt(id), Integer.parseInt(otherId));
+    public  Collection<User> listOfCommonFriends(@PathVariable String id, @PathVariable String otherId) {
+        Collection<Integer> setId = userService.retListOfCommonFriends(inMemoryUserStorage, Integer.parseInt(id), Integer.parseInt(otherId));
+        HashMap<Integer, User> friends = new HashMap<>();
+        for(Integer myFriendsId: setId) {
+            friends.put(myFriendsId, inMemoryUserStorage.getMapOfUser().get(myFriendsId));
+        }
+        return friends.values();
     }
 }

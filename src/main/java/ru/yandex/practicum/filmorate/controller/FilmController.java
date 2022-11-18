@@ -11,19 +11,18 @@ import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+
 @Slf4j
 @RestController
 public class FilmController {
     @Getter
     private final InMemoryFilmStorage inMemoryFilmStorage;
-    private final InMemoryUserStorage inMemoryUserStorage;
     private final FilmService filmService;
 
     @Autowired
-    public FilmController(InMemoryFilmStorage inMemoryFilmStorage, InMemoryUserStorage inMemoryUserStorage, FilmService filmService) {
-        this.inMemoryUserStorage = inMemoryUserStorage;
+    public FilmController(InMemoryFilmStorage inMemoryFilmStorage, FilmService filmService) {
         this.inMemoryFilmStorage = inMemoryFilmStorage;
         this.filmService = filmService;
     }
@@ -55,7 +54,7 @@ public class FilmController {
     //пользователь ставит лайк фильму
     @PutMapping("/films/{id}/like/{userId}")
     public void addLike(@PathVariable String id, @PathVariable String userId) {
-    filmService.addLike(inMemoryFilmStorage, inMemoryUserStorage, Integer.parseInt(id), Integer.parseInt(userId));
+    filmService.addLike(inMemoryFilmStorage, Integer.parseInt(id), Integer.parseInt(userId));
     }
 
     //пользователь удаляет лайк.
@@ -66,10 +65,8 @@ public class FilmController {
 
     //возвращает список из первых count фильмов по количеству лайков.
     //Если значение параметра count не задано, верните первые 10
-    @GetMapping("/films/popular?count={count}")
-    public Collection<Film> topFilms(@PathVariable String count) {
-        if(count.equals("null")) {
-            return filmService.topFilms(inMemoryFilmStorage, 10);
-        } else return filmService.topFilms(inMemoryFilmStorage, Integer.parseInt(count));
+    @GetMapping("/films/popular")
+    public Collection<Film> topFilms(@RequestParam (defaultValue = "10")String count) {
+        return filmService.topFilms(inMemoryFilmStorage, Integer.parseInt(count));
     }
 }
