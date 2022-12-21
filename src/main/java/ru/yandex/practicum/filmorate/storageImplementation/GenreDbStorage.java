@@ -1,0 +1,42 @@
+package ru.yandex.practicum.filmorate.storageImplementation;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.storageInterfase.GenreStorage;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Optional;
+
+@Repository
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
+public class GenreDbStorage implements GenreStorage {
+    private final JdbcTemplate jdbcTemplate;
+    static Genre makeGenre(ResultSet rs, int rowNum) throws SQLException {
+        int id = rs.getInt("genre_id");
+        String name = rs.getString("name");
+
+        return new Genre(id, name);
+    }
+    @Override
+    public Collection<Genre> findAll() {
+        String sql = "SELECT * FROM genre";
+
+        return jdbcTemplate.query(sql, GenreDbStorage::makeGenre);
+    }
+    @Override
+    public Optional<Genre> getById(int id) {
+        String sql = "SELECT * FROM genre WHERE genre_id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, GenreDbStorage::makeGenre, id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+
+}

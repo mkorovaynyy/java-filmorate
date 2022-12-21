@@ -1,21 +1,29 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
+import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
+import java.time.LocalDate;
+import java.util.LinkedHashSet;
 
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Film {
-    private Integer id;
-    @NotBlank
-    private final String name;
-    private final String description;
-    private final String releaseDate;
-    @Positive
-    private final Long duration;
-    @Positive
-    private Integer rate;
 
+    @PositiveOrZero
+    private int id;
+    @NotBlank(message = "Название фильма не может быть пустым")
+    @Size(max = 60, message = "Название фильма не может быть больше 60 символов")
+    private String name;
+    @NotNull(message = "Отсутствует описание фильма")
+    @Size(min = 1, max = 200, message = "Описание превышает 200 символов")
+    private String description;
+    private LocalDate releaseDate;
+    @Min(value = 1, message = "Некорректная продолжительность фильма")
+    private long duration;
+    private Mpa mpa;
+    private LinkedHashSet<Genre> genres;
 }
